@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/state_manager.dart';
 import 'package:sub_category_demo/classes/bases/base_controller.dart';
+import 'package:sub_category_demo/classes/utils/constants.dart';
 import 'package:sub_category_demo/models/home/home_entity.dart';
 import 'package:sub_category_demo/models/home/home_response.dart';
 import 'package:sub_category_demo/repository/home_repository.dart';
@@ -12,6 +13,9 @@ class HomeController extends BaseController {
   var _currentPage = 0.0.obs;
   double get currentPage => _currentPage.value;
 
+  var _screenState = ScreenState.LOADING.obs;
+  int get screenState => _screenState.value;
+
   List<HomeItemEntity> listSubCategory = [];
 
   HomeController() {
@@ -21,9 +25,11 @@ class HomeController extends BaseController {
   }
 
   void fetchHomeData() async {
+    _screenState.value = ScreenState.LOADING;
     var value = await _repository.fetchHomeData();
     if (!value.isError) {
       listSubCategory = (value.body as List<HomeItemResponse>).toListEntity();
     }
+    _screenState.value = ScreenState.SUCCESS;
   }
 }
