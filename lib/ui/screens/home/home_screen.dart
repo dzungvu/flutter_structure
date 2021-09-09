@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:sub_category_demo/classes/bases/base_screen.dart';
@@ -16,28 +17,38 @@ class HomeScreen extends BaseScreen<HomeController> {
       child: Scaffold(
         backgroundColor: Colors.black,
         body: SafeArea(
-          child: Column(
-            children: [
-              HomeHeader(),
-              Expanded(
-                flex: 1,
-                child: GetX<HomeController>(
-                  init: controller,
-                  builder: (_) => PageView.builder(
-                    controller: controller.pageController,
-                    itemBuilder: (context, index) => HomeItem(
-                      index: index.toDouble(),
-                      data: controller.listSubCategory[index],
+          child: GetX<HomeController>(
+            init: controller,
+            builder: (_) => controller.screenState == ScreenState.LOADING
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
                     ),
-                    itemCount: controller.screenState == ScreenState.SUCCESS
-                        ? controller.listSubCategory.length
-                        : 0,
-                    scrollDirection: Axis.horizontal,
-                    physics: BouncingScrollPhysics(),
+                  )
+                : Column(
+                    children: [
+                      HomeHeader(),
+                      Expanded(
+                        flex: 1,
+                        child: GetX<HomeController>(
+                          init: controller,
+                          builder: (_) => PageView.builder(
+                            controller: controller.pageController,
+                            itemBuilder: (context, index) => HomeItem(
+                              index: index.toDouble(),
+                              data: controller.listSubCategory[index],
+                            ),
+                            itemCount:
+                                controller.screenState == ScreenState.SUCCESS
+                                    ? controller.listSubCategory.length
+                                    : 0,
+                            scrollDirection: Axis.horizontal,
+                            physics: BouncingScrollPhysics(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-              ),
-            ],
           ),
         ),
       ),
